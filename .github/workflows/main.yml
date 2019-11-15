@@ -1,0 +1,59 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  java:
+    name: Java ${{ matrix.java }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: ['1.8', '11']
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Run test suite
+        run: mvn -B --no-transfer-progress -Dsurefire.useFile=false test
+
+  web:
+    name: Web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Setup yarn
+        run: |
+          npm install -g yarn
+          yarn --cwd yamcs-web install
+      - name: Build webapp
+        run: yarn --cwd yamcs-web build
+
+  javadoc:
+    name: Javadoc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Generate javadoc
+        run: mvn -B --no-transfer-progress -DskipTests javadoc:aggregate
+
+  publish_javadoc:
+    name: Update javadoc site
+    needs: javadoc
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@master
+    - name: 'Set up JDK 11'
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    #- name: 'Build and deploy'
+    #  run: |
+    #    mvn -B --no-transfer-progress -DskipTests javadoc:aggregate
