@@ -513,6 +513,10 @@ export interface DownloadPacketsOptions {
   order?: 'asc' | 'desc';
 }
 
+export interface ExportXtceOptions {
+  spaceSystem?: string;
+}
+
 export interface IndexGroup {
   id: NamedObjectId;
   entry: IndexEntry[];

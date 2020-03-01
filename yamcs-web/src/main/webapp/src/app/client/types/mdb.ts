@@ -2,7 +2,7 @@ export interface MissionDatabase {
   configName: string;
   name: string;
   version: string;
-  spaceSystem: SpaceSystem[];
+  spaceSystems: SpaceSystem[];
   parameterCount: number;
   containerCount: number;
   commandCount: number;
@@ -25,7 +25,7 @@ export interface SpaceSystem extends NameDescription {
 }
 
 export interface SpaceSystemsPage {
-  spaceSystems?: SpaceSystem[]
+  spaceSystems?: SpaceSystem[];
   continuationToken?: string;
   totalSize: number;
 }
@@ -323,6 +323,12 @@ export interface ContainersPage {
   containers?: Container[];
   continuationToken?: string;
   totalSize: number;
+}
+
+export interface GetSpaceSystemsOptions {
+  q?: string;
+  pos?: number;
+  limit?: number;
 }
 
 export interface GetCommandsOptions {

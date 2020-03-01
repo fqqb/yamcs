@@ -1,0 +1,44 @@
+<app-instance-page>
+  <app-instance-toolbar>
+    Mission Database
+    &nbsp;&nbsp;&nbsp;
+    <mat-menu #exportMenu="matMenu" class="ya-menu">
+      <a mat-menu-item
+         routerLink="export-xtce"
+         [queryParams]="{instance: instance.name}">
+        XTCE
+      </a>
+    </mat-menu>
+    <button mat-button
+            [matMenuTriggerFor]="exportMenu"
+            color="primary">
+      <mat-icon>save_alt</mat-icon>
+      EXPORT
+    </button>
+  </app-instance-toolbar>
+
+  <div class="panel-content">
+    <dl class="dl-horizontal no-lead" *ngIf="mdb$ | async as mdb">
+      <dt>Parameters:</dt>
+      <dd>
+        <a class="ya-link" routerLink="/mdb/parameters"
+           [queryParams]="{instance: instance.name}">{{ mdb.parameterCount }}</a>
+      </dd>
+      <dt>Containers:</dt>
+      <dd>
+        <a class="ya-link" routerLink="/mdb/containers"
+           [queryParams]="{instance: instance.name}">{{ mdb.containerCount }}</a>
+      </dd>
+      <dt>Commands:</dt>
+      <dd>
+        <a class="ya-link" routerLink="/mdb/commands"
+           [queryParams]="{instance: instance.name}">{{ mdb.commandCount }}</a>
+      </dd>
+      <dt>Algorithms:</dt>
+      <dd>
+        <a class="ya-link" routerLink="/mdb/algorithms"
+           [queryParams]="{instance: instance.name}">{{ mdb.algorithmCount }}</a>
+      </dd>
+    </dl>
+  </div>
+</app-instance-page>

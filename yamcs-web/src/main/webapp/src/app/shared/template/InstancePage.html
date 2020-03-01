@@ -122,10 +122,16 @@
       </app-sidebar-nav-item>
 
       <ng-container *ngIf="showMDB()">
-        <app-sidebar-nav-group label="MDB" icon="style"
+        <app-sidebar-nav-group label="Mission Database" icon="style"
                                [active]="mdbActive"
                                [expanded]="mdbExpanded"
                                (toggle)="toggleMdbGroup()">
+          <app-sidebar-nav-item routerLink="/mdb"
+                                [queryParams]="{instance: instance.name}"
+                                [exact]="true"
+                                [subitem]="true">
+            Overview
+          </app-sidebar-nav-item>
           <app-sidebar-nav-item routerLink="/mdb/parameters"
                                 [queryParams]="{instance: instance.name}"
                                 [subitem]="true">

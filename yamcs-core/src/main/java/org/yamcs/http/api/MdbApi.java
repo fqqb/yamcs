@@ -41,6 +41,7 @@ import org.yamcs.protobuf.Mdb.CommandInfo;
 import org.yamcs.protobuf.Mdb.ContainerInfo;
 import org.yamcs.protobuf.Mdb.DataSourceType;
 import org.yamcs.protobuf.Mdb.ExportJavaMissionDatabaseRequest;
+import org.yamcs.protobuf.Mdb.ExportXtceRequest;
 import org.yamcs.protobuf.Mdb.GetAlgorithmRequest;
 import org.yamcs.protobuf.Mdb.GetCommandRequest;
 import org.yamcs.protobuf.Mdb.GetContainerRequest;
@@ -108,6 +109,24 @@ public class MdbApi extends AbstractMdbApi<Context> {
         XtceDb mdb = XtceDbFactory.getInstance(instance);
         MissionDatabase converted = toMissionDatabase(instance, mdb);
         observer.complete(converted);
+    }
+
+    @Override
+    public void exportXtce(Context ctx, ExportXtceRequest request, Observer<HttpBody> observer) {
+        ctx.checkSystemPrivilege(SystemPrivilege.GetMissionDatabase);
+
+        String instance = ManagementApi.verifyInstance(request.getInstance());
+        XtceDb mdb = XtceDbFactory.getInstance(instance);
+
+        SpaceSystem spaceSystem = verifySpaceSystem(mdb, request.getName());
+        String xtce = XtceAssembler.toXtce(spaceSystem);
+
+        HttpBody httpBody = HttpBody.newBuilder()
+                .setContentType("text/xml")
+                .setFilename(spaceSystem.getName() + ".xtce.xml")
+                .setData(ByteString.copyFromUtf8(xtce))
+                .build();
+        observer.complete(httpBody);
     }
 
     @Override
@@ -994,8 +1013,12 @@ public class MdbApi extends AbstractMdbApi<Context> {
         b.setAlgorithmCount(mdb.getAlgorithms().size());
         b.setParameterTypeCount(mdb.getParameterTypes().size());
         SpaceSystem ss = mdb.getRootSpaceSystem();
-        for (SpaceSystem sub : ss.getSubSystems()) {
-            b.addSpaceSystem(XtceToGpbAssembler.toSpaceSystemInfo(sub));
+
+        List<SpaceSystem> subSystems = ss.getSubSystems().stream()
+                .sorted((s1, s2) -> s1.getQualifiedName().compareToIgnoreCase(s2.getQualifiedName()))
+                .collect(Collectors.toList());
+        for (SpaceSystem sub : subSystems) {
+            b.addSpaceSystems(XtceToGpbAssembler.toSpaceSystemInfo(sub));
         }
         return b.build();
     }

@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 import { CreateTransferRequest, Transfer, TransfersPage } from './types/cfdp';
 import { AlarmsWrapper, CommandQueuesWrapper, EventsWrapper, IndexResult, LinksWrapper, PacketNameWrapper, ProcessorsWrapper, RangesWrapper, RecordsWrapper, SamplesWrapper, ServicesWrapper, SourcesWrapper, SpaceSystemsWrapper, StreamsWrapper, TablesWrapper } from './types/internal';
-import { Algorithm, AlgorithmsPage, Command, CommandsPage, Container, ContainersPage, GetAlgorithmsOptions, GetCommandsOptions, GetContainersOptions, GetParametersOptions, MissionDatabase, NamedObjectId, Parameter, ParametersPage, SpaceSystem, SpaceSystemsPage } from './types/mdb';
-import { Alarm, AlarmSubscriptionResponse, CommandHistoryEntry, CommandHistoryPage, Cop1Config, CreateEventRequest, DownloadEventsOptions, DownloadPacketsOptions, DownloadParameterValuesOptions, EditAlarmOptions, EditReplayProcessorRequest, Event, EventSubscriptionResponse, GetAlarmsOptions, GetCommandHistoryOptions, GetCommandIndexOptions, GetCompletenessIndexOptions, GetEventIndexOptions, GetEventsOptions, GetPacketIndexOptions, GetPacketsOptions, GetParameterIndexOptions, GetParameterRangesOptions, GetParameterSamplesOptions, GetParameterValuesOptions, GetTagsOptions, IndexGroup, IssueCommandOptions, IssueCommandResponse, ListGapsResponse, ListPacketsResponse, ParameterData, ParameterSubscriptionRequest, ParameterSubscriptionResponse, ParameterValue, Range, RequestPlaybackRequest, Sample, TagsPage, TimeSubscriptionResponse, Value } from './types/monitoring';
+import { Algorithm, AlgorithmsPage, Command, CommandsPage, Container, ContainersPage, GetAlgorithmsOptions, GetCommandsOptions, GetContainersOptions, GetParametersOptions, GetSpaceSystemsOptions, MissionDatabase, NamedObjectId, Parameter, ParametersPage, SpaceSystem, SpaceSystemsPage } from './types/mdb';
+import { Alarm, AlarmSubscriptionResponse, CommandHistoryEntry, CommandHistoryPage, Cop1Config, CreateEventRequest, DownloadEventsOptions, DownloadPacketsOptions, DownloadParameterValuesOptions, EditAlarmOptions, EditReplayProcessorRequest, Event, EventSubscriptionResponse, ExportXtceOptions, GetAlarmsOptions, GetCommandHistoryOptions, GetCommandIndexOptions, GetCompletenessIndexOptions, GetEventIndexOptions, GetEventsOptions, GetPacketIndexOptions, GetPacketsOptions, GetParameterIndexOptions, GetParameterRangesOptions, GetParameterSamplesOptions, GetParameterValuesOptions, GetTagsOptions, IndexGroup, IssueCommandOptions, IssueCommandResponse, ListGapsResponse, ListPacketsResponse, ParameterData, ParameterSubscriptionRequest, ParameterSubscriptionResponse, ParameterValue, Range, RequestPlaybackRequest, Sample, TagsPage, TimeSubscriptionResponse, Value } from './types/monitoring';
 import { CommandQueue, CommandQueueEventSubscriptionResponse, CommandQueueSubscriptionResponse, CommandSubscriptionRequest, CommandSubscriptionResponse, ConnectionInfoSubscriptionResponse, EditCommandQueueEntryOptions, EditCommandQueueOptions, EditLinkOptions, InstanceSubscriptionResponse, Link, LinkSubscriptionResponse, Processor, ProcessorSubscriptionResponse, Record, Service, StatisticsSubscriptionResponse, Stream, StreamEventSubscriptionResponse, StreamSubscriptionResponse, Table } from './types/system';
 import { WebSocketClient } from './WebSocketClient';
 import YamcsClient from './YamcsClient';
@@ -405,16 +405,21 @@ export class InstanceClient {
     return url + this.queryString(options);
   }
 
+  getXtceDownloadURL(options: ExportXtceOptions = {}) {
+    const url = `${this.yamcs.apiUrl}/mdb/${this.instance}/space-systems${options.spaceSystem}:exportXTCE`;
+    return url + this.queryString(options);
+  }
+
   async getRootSpaceSystems() {
     const url = `${this.yamcs.apiUrl}/mdb/${this.instance}`;
     const response = await this.yamcs.doFetch(url);
     const wrapper = await response.json() as SpaceSystemsWrapper;
-    return wrapper.spaceSystem || [];
+    return wrapper.spaceSystems || [];
   }
 
-  async getSpaceSystems() {
+  async getSpaceSystems(options: GetSpaceSystemsOptions = {}) {
     const url = `${this.yamcs.apiUrl}/mdb/${this.instance}/space-systems`;
-    const response = await this.yamcs.doFetch(url);
+    const response = await this.yamcs.doFetch(url + this.queryString(options));
     return await response.json() as SpaceSystemsPage;
   }
 

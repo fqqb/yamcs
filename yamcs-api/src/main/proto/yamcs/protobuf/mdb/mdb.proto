@@ -38,7 +38,14 @@ service MdbApi {
       get: "/api/mdb/{instance}/space-systems/{name*}"
     };
   }
-  
+
+  // Export a space system in XTCE format
+  rpc ExportXtce(ExportXtceRequest) returns (yamcs.api.HttpBody) {
+    option (yamcs.api.route) = {
+      get: "/api/mdb/{instance}/space-systems/{name*}:exportXTCE"
+    };
+  }
+
   // List parameters
   rpc ListParameters(ListParametersRequest) returns (ListParametersResponse) {
     option (yamcs.api.route) = {
@@ -138,7 +145,7 @@ message MissionDatabase {
   optional string configName = 1; //this is the config section in mdb.yaml
   optional string name = 2; //XTCE root SpaceSystem name
   optional string version = 3; //XTCE root SpaceSystem header version
-  repeated SpaceSystemInfo spaceSystem = 4;
+  repeated SpaceSystemInfo spaceSystems = 4;
   optional int32 parameterCount = 6;
   optional int32 containerCount = 7;
   optional int32 commandCount = 8;
@@ -637,6 +644,11 @@ message ListSpaceSystemsResponse {
 }
 
 message GetSpaceSystemRequest {
+  optional string instance = 1;
+  optional string name = 2;
+}
+
+message ExportXtceRequest {
   optional string instance = 1;
   optional string name = 2;
 }

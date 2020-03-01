@@ -11,3 +11,4 @@ Mission Database
     get-parameter-info
     list-command-info
     get-command-info
+    export-xtce

@@ -12,7 +12,7 @@ Get data on a the Mission Database for the given Yamcs instance::
     {
       "configName" : "landing",
       "name" : "",
-      "spaceSystem" : [ {
+      "spaceSystems" : [ {
         "name" : "YSS",
         "qualifiedName" : "/YSS",
         "version" : "1.2",
@@ -36,5 +36,5 @@ Get data on a the Mission Database for the given Yamcs instance::
       required string configName = 1;
       required string name = 2;
       optional string version = 3;
-      repeated SpaceSystemInfo spaceSystem = 4;
+      repeated SpaceSystemInfo spaceSystems = 4;
     }

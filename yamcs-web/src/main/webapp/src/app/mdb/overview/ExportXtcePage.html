@@ -1,0 +1,37 @@
+<mat-toolbar class="top">
+    <mat-toolbar-row>
+        <a mat-icon-button routerLink="/mdb" [queryParams]="{instance: instance.name}" color="primary">
+            <mat-icon>arrow_back</mat-icon>
+        </a> Export XTCE
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="form-content ya-form mat-typography" *ngIf="mdb$ | async as mdb">
+    <form [formGroup]="form">
+        <label>
+            Format<br>
+            <select disabled>
+                <option>XTCE v1.1 (CCSDS Blue Book)</option>
+            </select>
+        </label>
+
+        <br>
+        <label>
+            Space system<br>
+        </label>
+        <label *ngFor="let spaceSystem of mdb.spaceSystems">
+            <input type="radio" formControlName="spaceSystem" [value]="spaceSystem.qualifiedName">
+            <span style="font-weight: normal">{{ spaceSystem.qualifiedName }}</span>
+        </label>
+    </form>
+    <p>&nbsp;</p>
+    <div class="action-bar">
+        <button class="ya-button" routerLink="/mdb" [queryParams]="{instance: instance.name}">CANCEL</button>
+        <app-download-button (click)="goToOverview()"
+                             [link]="downloadURL$ | async"
+                             [disabled]="!form.valid"
+                             [primary]="true">
+            GENERATE
+        </app-download-button>
+    </div>
+</div>

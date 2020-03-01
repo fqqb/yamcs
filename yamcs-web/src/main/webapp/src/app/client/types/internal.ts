@@ -44,7 +44,7 @@ export interface ServicesWrapper {
 }
 
 export interface SpaceSystemsWrapper {
-  spaceSystem: SpaceSystem[];
+  spaceSystems: SpaceSystem[];
 }
 
 export interface AlarmsWrapper {

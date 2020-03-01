@@ -195,11 +195,9 @@ public class ServerStreamingObserver implements Observer<Message> {
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
         response.headers().set(HttpHeaderNames.TRANSFER_ENCODING, HttpHeaderValues.CHUNKED);
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, contentType);
-
-        // Set Content-Disposition header so that supporting clients will treat
-        // response as a downloadable file
         if (filename != null) {
-            response.headers().set("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+            response.headers().set(HttpHeaderNames.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + filename + "\"");
         }
         ctx.nettyContext.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
     }

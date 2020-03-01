@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { AlarmsDataSource } from '../alarms/AlarmsDataSource';
-import { GeneralInfo, Instance, MissionDatabase, TmStatistics } from '../client';
+import { Instance, TmStatistics } from '../client';
 import { AuthService } from '../core/services/AuthService';
 import { ConfigService, WebsiteConfig } from '../core/services/ConfigService';
 import { YamcsService } from '../core/services/YamcsService';
@@ -25,9 +25,6 @@ export class InstanceHomePage implements OnDestroy {
   tmstatsSubscription: Subscription;
 
   alarmsDataSource: AlarmsDataSource;
-
-  info$: Promise<GeneralInfo>;
-  mdb$: Promise<MissionDatabase>;
 
   constructor(
     yamcs: YamcsService,
@@ -52,16 +49,6 @@ export class InstanceHomePage implements OnDestroy {
 
     this.alarmsDataSource = new AlarmsDataSource(yamcs);
     this.alarmsDataSource.loadAlarms('realtime');
-
-    if (this.showMDB()) {
-      this.mdb$ = yamcs.getInstanceClient()!.getMissionDatabase();
-    }
-
-    this.info$ = yamcs.yamcsClient.getGeneralInfo();
-  }
-
-  showMDB() {
-    return this.user.hasSystemPrivilege('GetMissionDatabase');
   }
 
   showAlarms() {

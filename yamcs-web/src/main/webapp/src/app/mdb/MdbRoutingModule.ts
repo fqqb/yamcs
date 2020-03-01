@@ -10,6 +10,8 @@ import { CommandPage } from './commands/CommandPage';
 import { CommandsPage } from './commands/CommandsPage';
 import { ContainerPage } from './containers/ContainerPage';
 import { ContainersPage } from './containers/ContainersPage';
+import { ExportXtcePage } from './overview/ExportXtcePage';
+import { OverviewPage } from './overview/OverviewPage';
 import { ParameterPage } from './parameters/ParameterPage';
 import { ParametersPage } from './parameters/ParametersPage';
 
@@ -22,7 +24,7 @@ const routes = [{
   children: [{
     path: '',
     pathMatch: 'full',
-    redirectTo: 'parameters',
+    component: OverviewPage,
   }, {
     path: 'algorithms',
     pathMatch: 'full',
@@ -45,6 +47,10 @@ const routes = [{
     path: 'containers/:qualifiedName',
     component: ContainerPage,
   }, {
+    path: 'export-xtce',
+    component: ExportXtcePage,
+    pathMatch: 'full'
+  }, {
     path: 'parameters',
     pathMatch: 'full',
     component: ParametersPage,
@@ -55,8 +61,8 @@ const routes = [{
 }];
 
 @NgModule({
-  imports: [ RouterModule.forChild(routes) ],
-  exports: [ RouterModule ],
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
 export class MdbRoutingModule { }
 
@@ -67,6 +73,8 @@ export const routingComponents = [
   CommandPage,
   ContainersPage,
   ContainerPage,
+  ExportXtcePage,
+  OverviewPage,
   ParametersPage,
   ParameterPage,
 ];
