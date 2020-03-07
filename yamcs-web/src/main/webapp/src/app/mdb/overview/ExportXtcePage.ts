@@ -7,39 +7,39 @@ import { Instance, MissionDatabase } from '../../client';
 import { YamcsService } from '../../core/services/YamcsService';
 
 @Component({
-    templateUrl: './ExportXtcePage.html',
-    styleUrls: ['./ExportXtcePage.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './ExportXtcePage.html',
+  styleUrls: ['./ExportXtcePage.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExportXtcePage {
 
-    instance: Instance;
-    form: FormGroup;
-    mdb$: Promise<MissionDatabase>;
+  instance: Instance;
+  form: FormGroup;
+  mdb$: Promise<MissionDatabase>;
 
-    downloadURL$ = new BehaviorSubject<string | null>(null);
+  downloadURL$ = new BehaviorSubject<string | null>(null);
 
-    constructor(yamcs: YamcsService, title: Title, formBuilder: FormBuilder, private router: Router) {
-        title.setTitle('Export XTCE');
-        this.instance = yamcs.getInstance();
-        this.form = formBuilder.group({
-            'spaceSystem': new FormControl(null, [Validators.required]),
+  constructor(yamcs: YamcsService, title: Title, formBuilder: FormBuilder, private router: Router) {
+    title.setTitle('Export XTCE');
+    this.instance = yamcs.getInstance();
+    this.form = formBuilder.group({
+      'spaceSystem': new FormControl(null, [Validators.required]),
+    });
+    this.mdb$ = yamcs.yamcsClient.getMissionDatabase(this.instance.name);
+
+    this.form.valueChanges.subscribe(value => {
+      if (this.form.valid) {
+        const url = yamcs.yamcsClient.getXtceDownloadURL(this.instance.name, {
+          spaceSystem: value.spaceSystem,
         });
-        this.mdb$ = yamcs.getInstanceClient()!.getMissionDatabase();
+        this.downloadURL$.next(url);
+      } else {
+        this.downloadURL$.next(null);
+      }
+    });
+  }
 
-        this.form.valueChanges.subscribe(value => {
-            if (this.form.valid) {
-                const url = yamcs.getInstanceClient()!.getXtceDownloadURL({
-                    spaceSystem: value.spaceSystem,
-                });
-                this.downloadURL$.next(url);
-            } else {
-                this.downloadURL$.next(null);
-            }
-        });
-    }
-
-    goToOverview() {
-        this.router.navigateByUrl(`/mdb?instance=${this.instance.name}`);
-    }
+  goToOverview() {
+    this.router.navigateByUrl(`/mdb?instance=${this.instance.name}`);
+  }
 }

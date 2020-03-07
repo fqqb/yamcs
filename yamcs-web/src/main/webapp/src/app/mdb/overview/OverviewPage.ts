@@ -19,6 +19,6 @@ export class OverviewPage {
   ) {
     title.setTitle('Mission Database');
     this.instance = yamcs.getInstance();
-    this.mdb$ = yamcs.getInstanceClient()!.getMissionDatabase();
+    this.mdb$ = yamcs.yamcsClient.getMissionDatabase(this.instance.name);
   }
 }
