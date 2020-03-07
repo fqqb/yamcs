@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { AlarmsDataSource } from '../alarms/AlarmsDataSource';
-import { Instance, TmStatistics } from '../client';
+import { Instance, TmStatistics, TMStatisticsSubscription } from '../client';
 import { AuthService } from '../core/services/AuthService';
 import { ConfigService, WebsiteConfig } from '../core/services/ConfigService';
 import { YamcsService } from '../core/services/YamcsService';
@@ -22,7 +21,7 @@ export class InstanceHomePage implements OnDestroy {
   config: WebsiteConfig;
 
   tmstats$ = new BehaviorSubject<TmStatistics[]>([]);
-  tmstatsSubscription: Subscription;
+  tmstatsSubscription: TMStatisticsSubscription;
 
   alarmsDataSource: AlarmsDataSource;
 
@@ -38,14 +37,10 @@ export class InstanceHomePage implements OnDestroy {
     this.instance = yamcs.getInstance();
     this.user = authService.getUser()!;
     title.setTitle(this.instance.name);
-    yamcs.getInstanceClient()!.getProcessorStatistics().then(response => {
-      response.statistics$.pipe(
-        filter(stats => stats.processor === processor.name),
-        map(stats => stats.tmstats || []),
-      ).subscribe(tmstats => {
-        this.tmstats$.next(tmstats);
-      });
-    });
+    this.tmstatsSubscription = yamcs.yamcsClient.createTMStatisticsSubscription({
+      instance: this.instance.name,
+      processor: processor.name,
+    }, stats => this.tmstats$.next(stats.tmstats || []));
 
     this.alarmsDataSource = new AlarmsDataSource(yamcs);
     this.alarmsDataSource.loadAlarms('realtime');
@@ -61,7 +56,7 @@ export class InstanceHomePage implements OnDestroy {
 
   ngOnDestroy() {
     if (this.tmstatsSubscription) {
-      this.tmstatsSubscription.unsubscribe();
+      this.tmstatsSubscription.cancel();
     }
     if (this.alarmsDataSource) {
       this.alarmsDataSource.disconnect();
