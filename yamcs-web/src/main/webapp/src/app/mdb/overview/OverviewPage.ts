@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Instance, MissionDatabase } from '../../client';
+import { MissionDatabase } from '../../client';
 import { YamcsService } from '../../core/services/YamcsService';
 
 @Component({
@@ -11,7 +11,7 @@ export class OverviewPage {
 
   mdb$: Promise<MissionDatabase>;
 
-  instance: Instance;
+  instance: string;
 
   constructor(
     yamcs: YamcsService,
@@ -19,6 +19,6 @@ export class OverviewPage {
   ) {
     title.setTitle('Mission Database');
     this.instance = yamcs.getInstance();
-    this.mdb$ = yamcs.yamcsClient.getMissionDatabase(this.instance.name);
+    this.mdb$ = yamcs.yamcsClient.getMissionDatabase(this.instance);
   }
 }

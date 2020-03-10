@@ -5,7 +5,7 @@
     <mat-menu #exportMenu="matMenu" class="ya-menu">
       <a mat-menu-item
          routerLink="export-xtce"
-         [queryParams]="{instance: instance.name}">
+         [queryParams]="{instance: instance}">
         XTCE
       </a>
     </mat-menu>
@@ -22,22 +22,22 @@
       <dt>Parameters:</dt>
       <dd>
         <a class="ya-link" routerLink="/mdb/parameters"
-           [queryParams]="{instance: instance.name}">{{ mdb.parameterCount }}</a>
+           [queryParams]="{instance: instance}">{{ mdb.parameterCount }}</a>
       </dd>
       <dt>Containers:</dt>
       <dd>
         <a class="ya-link" routerLink="/mdb/containers"
-           [queryParams]="{instance: instance.name}">{{ mdb.containerCount }}</a>
+           [queryParams]="{instance: instance}">{{ mdb.containerCount }}</a>
       </dd>
       <dt>Commands:</dt>
       <dd>
         <a class="ya-link" routerLink="/mdb/commands"
-           [queryParams]="{instance: instance.name}">{{ mdb.commandCount }}</a>
+           [queryParams]="{instance: instance}">{{ mdb.commandCount }}</a>
       </dd>
       <dt>Algorithms:</dt>
       <dd>
         <a class="ya-link" routerLink="/mdb/algorithms"
-           [queryParams]="{instance: instance.name}">{{ mdb.algorithmCount }}</a>
+           [queryParams]="{instance: instance}">{{ mdb.algorithmCount }}</a>
       </dd>
     </dl>
   </div>

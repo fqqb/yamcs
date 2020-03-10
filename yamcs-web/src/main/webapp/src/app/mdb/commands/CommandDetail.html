@@ -7,8 +7,8 @@
       <dt>Space system</dt>
       <dd>
         <a routerLink="/mdb/commands"
-            [queryParams]="{instance: instance.name, filter: alias.namespace}"
-            class="ya-link">
+           [queryParams]="{instance: instance, filter: alias.namespace}"
+           class="ya-link">
           {{ alias.namespace }}
         </a>
       </dd>
@@ -35,7 +35,7 @@
   <dt>Base command</dt>
   <dd *ngIf="command.baseCommand">
     <a [routerLink]="['/mdb/commands/', command.baseCommand?.qualifiedName]"
-       [queryParams]="{instance: instance.name}"
+       [queryParams]="{instance: instance}"
        class="ya-link">
       {{ command.baseCommand?.qualifiedName }}
     </a>
@@ -78,7 +78,8 @@
         <td>{{ argument.description || '-' }}</td>
         <td>
           <ng-container *ngIf="argument.type?.engType === 'enumeration'">
-            <span (click)="showEnum(argument)" matTooltip="Show enum states" class="enum">{{ argument.type?.engType }}</span>
+            <span (click)="showEnum(argument)" matTooltip="Show enum states"
+                  class="enum">{{ argument.type?.engType }}</span>
           </ng-container>
           <ng-container *ngIf="argument.type?.engType !== 'enumeration'">
             {{ argument.type?.engType || '-' }}
@@ -115,7 +116,7 @@
         <td>
           <ng-container *ngFor="let comparison of constraint.comparison">
             <a [routerLink]="['/mdb/parameters/', comparison.parameter.qualifiedName]"
-               [queryParams]="{instance: instance.name}">{{ comparison.parameter.qualifiedName }}</a>
+               [queryParams]="{instance: instance}">{{ comparison.parameter.qualifiedName }}</a>
             {{ comparison.operator | operator }}
             {{ comparison.value }}
           </ng-container>
@@ -152,11 +153,11 @@
         <td>
           <ng-container *ngIf="verifier.algorithm">
             <a [routerLink]="['/mdb/algorithms/', verifier.algorithm?.qualifiedName]"
-               [queryParams]="{instance: instance.name}">{{ verifier.algorithm?.qualifiedName }}</a>
+               [queryParams]="{instance: instance}">{{ verifier.algorithm?.qualifiedName }}</a>
           </ng-container>
           <ng-container *ngIf="verifier.container">
             <a [routerLink]="['/mdb/containers/', verifier.container?.qualifiedName]"
-               [queryParams]="{instance: instance.name}">{{ verifier.container?.qualifiedName }}</a>
+               [queryParams]="{instance: instance}">{{ verifier.container?.qualifiedName }}</a>
           </ng-container>
         </td>
         <td>

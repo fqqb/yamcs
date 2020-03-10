@@ -7,7 +7,7 @@
       <dt>Space System</dt>
       <dd>
         <a routerLink="/mdb/algorithms"
-           [queryParams]="{instance: instance.name, filter: alias.namespace}"
+           [queryParams]="{instance: instance, filter: alias.namespace}"
            class="ya-link">
           {{ alias.namespace }}
         </a>
@@ -64,7 +64,7 @@
         <td>{{ inputParameter.inputName }}</td>
         <td>
           <a [routerLink]="['/mdb/parameters/', inputParameter.parameter.qualifiedName]"
-             [queryParams]="{instance: instance.name}">
+             [queryParams]="{instance: instance}">
             {{ inputParameter.parameter.qualifiedName }}
           </a>
         </td>
@@ -95,7 +95,7 @@
         <td>{{ outputParameter.outputName }}</td>
         <td>
           <a [routerLink]="['/mdb/parameters/', outputParameter.parameter.qualifiedName]"
-             [queryParams]="{instance: instance.name}">
+             [queryParams]="{instance: instance}">
             {{ outputParameter.parameter.qualifiedName }}
           </a>
         </td>
@@ -119,7 +119,7 @@
         <td>OnParameterUpdate</td>
         <td>
           <a [routerLink]="['/mdb/parameters/', trigger.qualifiedName]"
-             [queryParams]="{instance: instance.name}">
+             [queryParams]="{instance: instance}">
             {{ trigger.qualifiedName }}
           </a>
         </td>

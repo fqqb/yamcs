@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { Instance, MissionDatabase } from '../../client';
+import { MissionDatabase } from '../../client';
 import { YamcsService } from '../../core/services/YamcsService';
 
 @Component({
@@ -13,7 +13,7 @@ import { YamcsService } from '../../core/services/YamcsService';
 })
 export class ExportXtcePage {
 
-  instance: Instance;
+  instance: string;
   form: FormGroup;
   mdb$: Promise<MissionDatabase>;
 
@@ -25,11 +25,11 @@ export class ExportXtcePage {
     this.form = formBuilder.group({
       'spaceSystem': new FormControl(null, [Validators.required]),
     });
-    this.mdb$ = yamcs.yamcsClient.getMissionDatabase(this.instance.name);
+    this.mdb$ = yamcs.yamcsClient.getMissionDatabase(this.instance);
 
     this.form.valueChanges.subscribe(value => {
       if (this.form.valid) {
-        const url = yamcs.yamcsClient.getXtceDownloadURL(this.instance.name, {
+        const url = yamcs.yamcsClient.getXtceDownloadURL(this.instance, {
           spaceSystem: value.spaceSystem,
         });
         this.downloadURL$.next(url);
@@ -40,6 +40,6 @@ export class ExportXtcePage {
   }
 
   goToOverview() {
-    this.router.navigateByUrl(`/mdb?instance=${this.instance.name}`);
+    this.router.navigateByUrl(`/mdb?instance=${this.instance}`);
   }
 }
