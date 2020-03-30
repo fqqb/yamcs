@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.yamcs.api.EventProducerFactory;
+import org.yamcs.events.EventProducerFactory;
 import org.yamcs.parameter.ParameterValue;
 import org.yamcs.protobuf.Pvalue.MonitoringResult;
 import org.yamcs.utils.TimeEncoding;
@@ -26,8 +26,7 @@ public class AlarmServerTest {
     Parameter p2 = new Parameter("p2");
     AlarmServer<Parameter, ParameterValue> alarmServer;
     ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(1);
-    
-    
+
     @BeforeClass
     static public void setupBeforeClass() {
         EventProducerFactory.setMockup(true);
@@ -40,7 +39,7 @@ public class AlarmServerTest {
 
         return pv;
     }
-    
+
     @Before
     public void before() {
         alarmServer = new AlarmServer<>("toto", timer);
@@ -114,10 +113,9 @@ public class AlarmServerTest {
         assertEquals(pv1_0, aa.triggerValue);
 
         assertEquals(1, l.rtn.size());
-        
+
         long ackTime = 123L;
         alarmServer.acknowledge(aa, "test2", ackTime, "bla");
-
 
         aa = l.cleared.remove();
         assertEquals(pv1_1, aa.currentValue);
@@ -128,7 +126,6 @@ public class AlarmServerTest {
         assertEquals("bla", aa.getAckMessage());
     }
 
-    
     @Test
     public void testShelve() throws InterruptedException {
         MyListener l = new MyListener();
@@ -144,7 +141,7 @@ public class AlarmServerTest {
         alarmServer.shelve(aa, "busy operator", "looking at it later", 500);
         assertEquals(1, l.shelved.size());
         assertEquals(aa, l.shelved.remove());
-        
+
         ActiveAlarm<ParameterValue> aa1 = l.unshelved.poll(2000, TimeUnit.MILLISECONDS);
 
         assertEquals(aa, aa1);
@@ -174,7 +171,7 @@ public class AlarmServerTest {
 
     @Test
     public void testGetActiveAlarmWithNoAlarm() throws AlarmSequenceException {
-       
+
         MyListener l = new MyListener();
         alarmServer.addAlarmListener(l);
 

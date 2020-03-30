@@ -4,8 +4,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.yamcs.ConfigurationException;
 import org.yamcs.YConfiguration;
-import org.yamcs.api.EventProducer;
-import org.yamcs.api.EventProducerFactory;
+import org.yamcs.events.EventProducer;
+import org.yamcs.events.EventProducerFactory;
 import org.yamcs.logging.Log;
 
 import com.google.common.util.concurrent.AbstractService;
@@ -106,18 +106,21 @@ public abstract class AbstractLink extends AbstractService implements Link {
     public boolean isDisabled() {
         return disabled.get();
     }
-    
+
     public boolean isRunningAndEnabled() {
         State state = state();
-        return (state==State.RUNNING||state==State.STARTING) && !disabled.get();
+        return (state == State.RUNNING || state == State.STARTING) && !disabled.get();
     }
 
-    protected void doDisable() throws Exception {};
+    protected void doDisable() throws Exception {
+    };
 
-    protected void doEnable() throws Exception {};
-    
+    protected void doEnable() throws Exception {
+    };
+
     /**
-     * In case the link should be connected (i.e. is running and enabled) this method is called to return the actual connection status
+     * In case the link should be connected (i.e. is running and enabled) this method is called to return the actual
+     * connection status
      */
     protected abstract Status connectionStatus();
 
