@@ -1145,7 +1145,7 @@ public class YamcsServer {
     }
 
     private void discoverTemplates() throws IOException {
-        Path templatesDir = Paths.get("etc", "instance-templates");
+        Path templatesDir = configDirectory.resolve("instance-templates");
         if (!Files.exists(templatesDir)) {
             return;
         }
@@ -1193,13 +1193,17 @@ public class YamcsServer {
                             }
                         }
 
-                        YAMCS.instanceTemplates.put(name, template);
+                        addTemplate(template);
                     } catch (IOException e) {
                         throw new UncheckedIOException(e);
                     }
                 }
             });
         }
+    }
+
+    public void addTemplate(Template template) {
+        YAMCS.instanceTemplates.put(template.getName(), template);
     }
 
     public void addGlobalServicesAndInstances() throws IOException, ValidationException {
