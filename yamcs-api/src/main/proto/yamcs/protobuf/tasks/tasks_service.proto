@@ -1,0 +1,46 @@
+syntax="proto2";
+
+package yamcs.protobuf.tasks;
+
+option java_package = "org.yamcs.protobuf.tasks";
+option java_outer_classname = "TasksServiceProto";
+option java_multiple_files = true;
+
+import "yamcs/api/annotations.proto";
+import "yamcs/protobuf/tasks/tasks.proto";
+
+service TasksApi {
+
+  // List tasks
+  rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
+    option (yamcs.api.route) = {
+      get: "/api/tasks/{instance}"
+    };
+  }
+
+  // Receive task updates
+  rpc SubscribeTasks(SubscribeTasksRequest) returns (stream TaskUpdate) {
+    option (yamcs.api.websocket) = {
+      topic: "tasks"
+    };
+  }
+}
+
+message ListTasksRequest {
+  // Yamcs instance name
+  optional string instance = 1;
+}
+
+message ListTasksResponse {
+  repeated TaskInfo tasks = 1;
+}
+
+message SubscribeTasksRequest {
+  // Yamcs instance name
+  optional string instance = 1;
+}
+
+message TaskUpdate {
+  // Ongoing tasks
+  repeated TaskInfo tasks = 1;
+}

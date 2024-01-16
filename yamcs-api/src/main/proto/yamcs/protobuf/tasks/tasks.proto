@@ -1,0 +1,24 @@
+syntax="proto2";
+
+package yamcs.protobuf.tasks;
+
+option java_package = "org.yamcs.protobuf.tasks";
+option java_outer_classname = "TasksProto";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+
+message TaskInfo {
+
+  // Task identifier
+  optional string id = 1;
+
+  // Task creation time
+  optional google.protobuf.Timestamp createTime = 2;
+
+  // When the task really started executing
+  optional google.protobuf.Timestamp fireTime = 3;
+
+  // When the task stopped executing (either successfully or unsuccessfully)
+  optional google.protobuf.Timestamp finishTime = 4;
+}

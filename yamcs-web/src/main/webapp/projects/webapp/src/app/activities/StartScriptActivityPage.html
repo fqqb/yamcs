@@ -1,0 +1,28 @@
+<app-instance-page>
+  <app-instance-toolbar>
+    Start script activity
+  </app-instance-toolbar>
+
+  <app-start-activity-wizard-step step="2" />
+
+  <div class="form-content ya-form">
+    <form [formGroup]="form" novalidate autocomplete="off">
+      <label>
+        Script <span class="hint">(required)</span><br>
+        <ya-select formControlName="script" [options]="scriptOptions$ | async" />
+      </label>
+      <br>
+      <label>
+        Script arguments<br>
+        <input type="text" formControlName="args">
+      </label>
+    </form>
+    <p>&nbsp;</p>
+    <div class="action-bar">
+      <button class="ya-button" routerLink="../.."
+              [queryParams]="{c: yamcs.context}">Cancel</button>
+      <button class="ya-button primary" type="submit" (click)="onConfirm()"
+              [disabled]="!form.valid">START</button>
+    </div>
+  </div>
+</app-instance-page>

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ public class Spec {
                 .withSpec(ANY);
     }
 
-    private Map<String, Option> options = new HashMap<>();
+    private Map<String, Option> options = new LinkedHashMap<>();
     private Map<String, String> aliases = new HashMap<>();
 
     private boolean allowUnknownKeys = false;
@@ -272,9 +273,33 @@ public class Spec {
         return options.values();
     }
 
+    public boolean isAllowUnknownKeys() {
+        return allowUnknownKeys;
+    }
+
+    public List<List<String>> getRequiredOneOfGroups() {
+        return requiredOneOfGroups;
+    }
+
+    public List<List<String>> getRequireTogetherGroups() {
+        return requireTogetherGroups;
+    }
+
+    public List<WhenCondition> getWhenConditions() {
+        return whenConditions;
+    }
+
     private Option getOption(String key) {
         key = aliases.getOrDefault(key, key);
         return options.get(key);
+    }
+
+    public List<String> getAliases(Option option) {
+        return aliases.entrySet().stream()
+                .filter(entry -> option.name.equals(entry.getValue()))
+                .map(entry -> entry.getKey())
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     /**
@@ -500,6 +525,18 @@ public class Spec {
             }
             return this;
         }
+
+        public String getKey() {
+            return key;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public List<String> getRequiredKeys() {
+            return requiredKeys;
+        }
     }
 
     public static final class Option {
@@ -566,8 +603,16 @@ public class Spec {
             return deprecationMessage;
         }
 
+        public List<Object> getChoices() {
+            return choices;
+        }
+
         public Spec getSpec() {
             return spec;
+        }
+
+        public boolean isApplySpecDefaults() {
+            return applySpecDefaults;
         }
 
         public Object getDefaultValue() {
@@ -770,6 +815,25 @@ public class Spec {
                 return result;
             }
             return null;
+        }
+    }
+
+    /**
+     * A specialized {@link Spec} that also has a name.
+     * 
+     * The intended usage is when a {@link Spec} is defined for the value of a mapping key, and this mapping key is also
+     * to be specified.
+     */
+    public static final class NamedSpec extends Spec {
+
+        private String name;
+
+        public NamedSpec(String name) {
+            this.name = Objects.requireNonNull(name);
+        }
+
+        public String getName() {
+            return name;
         }
     }
 

@@ -178,6 +178,15 @@ a.ya-link.ya-header-link {
   color: crimson !important;
 }
 
+.badge {
+  position: relative;
+  color: #ffffff;
+  background-color: #FF4081;
+  border-radius: 50%;
+  padding: 4px 5px;
+  font-family: "Roboto";
+}
+
 /*
  * Fix for scrollbar being invisible on Safari.
  * https://github.com/ajaxorg/ace/issues/2872

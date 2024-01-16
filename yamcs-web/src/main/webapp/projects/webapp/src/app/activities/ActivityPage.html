@@ -1,0 +1,29 @@
+<app-instance-page *ngIf="activity$ | async as activity">
+  <app-instance-toolbar>
+    <a mat-icon-button routerLink=".."
+       [queryParams]="{c: yamcs.context}"
+       color="primary">
+      <mat-icon>arrow_back</mat-icon>
+    </a> Activity details
+  </app-instance-toolbar>
+
+  <div class="activity-header">
+    <h2>{{ activity.id }}</h2>
+  </div>
+
+  <nav #tabs mat-tab-nav-bar class="secondary" [mat-stretch-tabs]="false" [tabPanel]="tabPanel">
+    <a mat-tab-link
+       routerLink="log"
+       routerLinkActive #rla="routerLinkActive"
+       [active]="rla.isActive"
+       [queryParams]="{c: yamcs.context}">
+      Activity Log
+    </a>
+  </nav>
+
+  <div class="tab-content-wrapper">
+    <mat-tab-nav-panel #tabPanel>
+      <router-outlet />
+    </mat-tab-nav-panel>
+  </div>
+</app-instance-page>

@@ -1,0 +1,11 @@
+<table class="logs mono" style="width: 100%">
+  <tr *ngFor="let log of logs$ | async; index as index"
+      [class.WARNING]="log.level === 'WARNING'"
+      [class.ERROR]="log.level === 'ERROR'">
+    <td style="text-align: right" width="1">{{ index + 1 }}</td>
+    <td class="time" style="white-space: nowrap" width="1">
+      [{{ log.time | datetime:false }}]
+    </td>
+    <td style="white-space: pre-wrap">{{ log.message }}</td>
+  </tr>
+</table>

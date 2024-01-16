@@ -54,6 +54,10 @@ const routes: Routes = [
         canActivate: [authGuardFn],
         data: { 'hasSidebar': false }
       }, {
+        path: 'activities',
+        loadChildren: () => import('projects/webapp/src/app/activities/ActivitiesModule').then(m => m.ActivitiesModule),
+        canActivate: [authGuardFn],
+      }, {
         path: 'alarms',
         loadChildren: () => import('projects/webapp/src/app/alarms/AlarmsModule').then(m => m.AlarmsModule),
         canActivate: [authGuardFn],

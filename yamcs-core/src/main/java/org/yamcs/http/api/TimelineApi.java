@@ -1,6 +1,7 @@
 package org.yamcs.http.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -236,13 +237,21 @@ public class TimelineApi extends AbstractTimelineApi<Context> {
         String source;
 
         if (request.hasBand()) {
-            UUID bandId = UUID.fromString(request.getBand());
-            var band = timelineService.getTimelineBandDb().getBand(bandId);
-            source = band.getSource() != null ? band.getSource()
-                    : request.hasSource() ? request.getSource() : TimelineService.RDB_TIMELINE_SOURCE;
+            try {
+                UUID bandId = UUID.fromString(request.getBand());
+                var band = timelineService.getTimelineBandDb().getBand(bandId);
+                source = band.getSource() != null ? band.getSource()
+                        : request.hasSource() ? request.getSource() : TimelineService.RDB_TIMELINE_SOURCE;
 
-            filter = new RetrievalFilter(interval, band.getItemFilters());
-            filter.setTags(band.getTags());
+                filter = new RetrievalFilter(interval, band.getItemFilters());
+                filter.setTags(band.getTags());
+            } catch (IllegalArgumentException e) { // TEMP
+                var tag = request.getBand();
+                source = request.hasSource() ? request.getSource() : TimelineService.RDB_TIMELINE_SOURCE;
+                filter = new RetrievalFilter(interval, Collections.emptyList());
+                filter.setTags(Arrays.asList(tag));
+                System.out.println("Filter with tag " + tag);
+            }
         } else {
             source = request.hasSource() ? request.getSource() : TimelineService.RDB_TIMELINE_SOURCE;
             filter = new RetrievalFilter(interval, request.getFiltersList());

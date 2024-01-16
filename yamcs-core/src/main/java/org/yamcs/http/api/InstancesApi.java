@@ -18,6 +18,7 @@ import org.yamcs.InstanceMetadata;
 import org.yamcs.Processor;
 import org.yamcs.YamcsServer;
 import org.yamcs.YamcsServerInstance;
+import org.yamcs.activities.ActivityService;
 import org.yamcs.api.Observer;
 import org.yamcs.archive.CcsdsTmIndex;
 import org.yamcs.filetransfer.FileTransferService;
@@ -457,6 +458,9 @@ public class InstancesApi extends AbstractInstancesApi<Context> {
 
         if (!ysi.getServicesWithConfig(CcsdsTmIndex.class).isEmpty()) {
             instanceb.addCapabilities("ccsds-completeness");
+        }
+        if (!ysi.getServicesWithConfig(ActivityService.class).isEmpty()) {
+            instanceb.addCapabilities("activities");
         }
         if (!ysi.getServicesWithConfig(FileTransferService.class).isEmpty()) {
             instanceb.addCapabilities("file-transfer");

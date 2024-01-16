@@ -1,0 +1,23 @@
+<app-instance-page>
+  <app-instance-toolbar>
+    Start manual activity
+  </app-instance-toolbar>
+
+  <app-start-activity-wizard-step step="2" />
+
+  <div class="form-content ya-form">
+    <form [formGroup]="form" novalidate autocomplete="off">
+      <label>
+        Name <span class="hint">(required)</span><br>
+        <input type="text" formControlName="name">
+      </label>
+    </form>
+    <p>&nbsp;</p>
+    <div class="action-bar">
+      <button class="ya-button" routerLink="../.."
+              [queryParams]="{c: yamcs.context}">Cancel</button>
+      <button class="ya-button primary" type="submit" (click)="onConfirm()"
+              [disabled]="!form.valid">START</button>
+    </div>
+  </div>
+</app-instance-page>
