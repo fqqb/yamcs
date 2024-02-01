@@ -23,6 +23,18 @@ const routes: Routes = [
         pathMatch: 'full',
         component: ActivitiesPage,
       }, {
+        path: 'create',
+        pathMatch: 'full',
+        component: StartActivityPage,
+      }, {
+        path: 'create/manual',
+        pathMatch: 'full',
+        component: StartManualActivityPage,
+      }, {
+        path: 'create/script',
+        pathMatch: 'full',
+        component: StartScriptActivityPage,
+      }, {
         path: ':activityId',
         component: ActivityPage,
         children: [
@@ -35,18 +47,6 @@ const routes: Routes = [
             component: ActivityLogTab,
           }
         ]
-      }, {
-        path: 'create',
-        pathMatch: 'full',
-        component: StartActivityPage,
-      }, {
-        path: 'create/manual',
-        pathMatch: 'full',
-        component: StartManualActivityPage,
-      }, {
-        path: 'create/script',
-        pathMatch: 'full',
-        component: StartScriptActivityPage,
       }
     ]
   }

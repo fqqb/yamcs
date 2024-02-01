@@ -8,7 +8,14 @@
   </app-instance-toolbar>
 
   <div class="activity-header">
-    <h2>{{ activity.id }}</h2>
+    <div class="activity-header-left">
+      <span class="title">{{ activity.detail }}</span><br>
+      <span class="subtitle">ID: {{ activity.id }}</span><br>
+      <span class="subtitle">Started {{ activity.start | datetime }}</span><br>
+    </div>
+    <div class="activity-header-right">
+      <ya-label>{{ activity.status }}</ya-label>
+    </div>
   </div>
 
   <nav #tabs mat-tab-nav-bar class="secondary" [mat-stretch-tabs]="false" [tabPanel]="tabPanel">

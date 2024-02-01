@@ -32,7 +32,7 @@ export class StartManualActivityPage {
       args: {
         name: formValue['name'],
       },
-    }).then(() => this.router.navigateByUrl(`/activities?c=${this.yamcs.context}`))
+    }).then(activity => this.router.navigateByUrl(`/activities/${activity.id}?c=${this.yamcs.context}`))
       .catch(err => this.messageService.showError(err));
   }
 }

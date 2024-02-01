@@ -58,6 +58,9 @@ public class ScriptExecution extends ActivityExecution {
             pb.redirectErrorStream();
             process = pb.start();
 
+            var infoMessage = "Started process, pid=" + process.pid();
+            logServiceInfo(infoMessage);
+
             try (var reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 reader.lines().forEach(line -> {
                     line = CharMatcher.whitespace().trimTrailingFrom(line);

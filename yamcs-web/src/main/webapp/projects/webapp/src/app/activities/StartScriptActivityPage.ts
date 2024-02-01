@@ -58,7 +58,7 @@ export class StartScriptActivityPage {
         script: formValue['script'],
         args: formValue['args'],
       },
-    }).then(() => this.router.navigateByUrl(`/activities?c=${this.yamcs.context}`))
+    }).then(activity => this.router.navigateByUrl(`/activities/${activity.id}?c=${this.yamcs.context}`))
       .catch(err => this.messageService.showError(err));
   }
 }
