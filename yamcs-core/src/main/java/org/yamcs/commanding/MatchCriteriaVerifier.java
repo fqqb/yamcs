@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.yamcs.Processor;
 import org.yamcs.mdb.MatchCriteriaEvaluator;
-import org.yamcs.mdb.ProcessingData;
 import org.yamcs.mdb.MatchCriteriaEvaluator.MatchResult;
+import org.yamcs.mdb.ProcessingData;
 import org.yamcs.parameter.ParameterProcessor;
 import org.yamcs.parameter.ParameterValue;
 import org.yamcs.xtce.CommandVerifier;
@@ -44,8 +44,13 @@ public class MatchCriteriaVerifier extends Verifier implements ParameterProcesso
 
     @Override
     void doStart() {
+        System.out.println("Starting verifier ....");
         Set<Parameter> pset = matchCriteria.getDependentParameters().stream()
                 .filter(p -> !p.isCommandParameter()).collect(Collectors.toSet());
+        System.out.println("Sub size ... " + pset.size());
+        for (var p : pset) {
+            System.out.println("subpar .. " + p);
+        }
         if (pset != null) {
             ppmSubscriptionId = proc.getParameterProcessorManager().subscribe(pset, this);
         }
@@ -55,11 +60,13 @@ public class MatchCriteriaVerifier extends Verifier implements ParameterProcesso
 
     @Override
     void doCancel() {
+        System.out.println("cancelling");
         unsubscribe();
     }
 
     @Override
     public void process(ProcessingData tmData) {
+        System.out.println("Processing tmData");
         ProcessingData cmdData = ProcessingData.cloneForCommanding(tmData, activeCommand.getArguments(),
                 activeCommand.getCmdParamCache());
         check(cmdData);
@@ -69,8 +76,9 @@ public class MatchCriteriaVerifier extends Verifier implements ParameterProcesso
         if (state != State.RUNNING) {
             return;
         }
+        System.out.println("Evaluate with " + evaluator.getClass());
         MatchResult result = evaluator.evaluate(processingData);
-        log.debug("Condition check result: {}", result);
+        log.info("Condition check result: {}", result);
 
         if (result == MatchResult.UNDEF ||
                 (result == MatchResult.NOK && !cv.failOnFirstFailedMatch())) {

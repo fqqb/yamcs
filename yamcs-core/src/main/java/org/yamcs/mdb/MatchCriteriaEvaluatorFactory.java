@@ -173,12 +173,24 @@ public class MatchCriteriaEvaluatorFactory {
 
         @Override
         ResolvedValue resolveLeft(ProcessingData input) {
-            return resolveValue(leftRef, input);
+            var v = resolveValue(leftRef, input);
+            System.out.println("Resolve left: " + printExpressionReference(leftRef) + " : " + v);
+            if (v != null && v.value != null) {
+                if (v.value != null) {
+                    System.out.println(" ... " + v.value.getClass());
+                }
+            }
+            return v;
         }
 
         @Override
         ResolvedValue resolveRight(ProcessingData input) {
-            return resolveValue(rightRef, input);
+            var v = resolveValue(rightRef, input);
+            System.out.println("Resolve right: " + printExpressionReference(rightRef) + " : " + v);
+            if (v != null && v.value != null) {
+                System.out.println(" ... " + v.value.getClass());
+            }
+            return v;
         }
 
         @Override
