@@ -7,10 +7,10 @@ import java.util.Map;
 import org.yamcs.Spec;
 import org.yamcs.Spec.NamedSpec;
 import org.yamcs.Spec.OptionType;
-import org.yamcs.buckets.Bucket;
 import org.yamcs.ValidationException;
 import org.yamcs.YConfiguration;
 import org.yamcs.YamcsServer;
+import org.yamcs.buckets.Bucket;
 import org.yamcs.security.User;
 
 public class CommandStackExecutor implements ActivityExecutor {

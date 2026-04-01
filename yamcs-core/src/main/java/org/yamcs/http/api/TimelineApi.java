@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.yamcs.YamcsServer;
+import org.yamcs.activities.ActivityService;
 import org.yamcs.activities.protobuf.ActivityDefinition;
 import org.yamcs.api.Observer;
 import org.yamcs.http.BadRequestException;
@@ -79,6 +80,7 @@ public class TimelineApi extends AbstractTimelineApi<Context> {
     @Override
     public void createItem(Context ctx, CreateItemRequest request, Observer<TimelineItem> observer) {
         ctx.checkSystemPrivilege(SystemPrivilege.ControlTimeline);
+        ActivityService activityService = ActivitiesApi.verifyService(request.getInstance());
         TimelineService timelineService = verifyService(request.getInstance());
         ItemProvider timelineSource = verifySource(timelineService,
                 request.hasSource() ? request.getSource() : RDB_TIMELINE_SOURCE);

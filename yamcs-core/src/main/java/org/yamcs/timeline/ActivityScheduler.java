@@ -64,7 +64,7 @@ public class ActivityScheduler extends AbstractExecutionThreadService implements
 
     public void init(TimelineService timelineService, YConfiguration config) {
         this.yamcsInstance = timelineService.getYamcsInstance();
-        this.activityService = timelineService.getActivityService();
+        this.activityService = YamcsServer.getServer().getInstance(yamcsInstance).getActivityService();
         this.timelineItemDb = timelineService.getTimelineItemDb();
         log = new Log(getClass(), yamcsInstance);
     }

@@ -23,27 +23,29 @@ import java.util.stream.Collectors;
 import org.yamcs.InitException;
 import org.yamcs.Spec;
 import org.yamcs.Spec.OptionType;
+import org.yamcs.ValidationException;
 import org.yamcs.YConfiguration;
 import org.yamcs.YamcsServer;
 import org.yamcs.logging.Log;
 import org.yamcs.security.User;
+import org.yamcs.timeline.TimelineService;
 import org.yamcs.utils.ExceptionUtil;
 import org.yamcs.utils.TimeEncoding;
 
-import com.google.common.util.concurrent.AbstractService;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 /**
- * Yamcs service for executing activities.
+ * Handles execution and persistence of activities
  */
-public class ActivityService extends AbstractService {
+public class ActivityService {
 
     public static final String ACTIVITY_TYPE_MANUAL = "MANUAL";
 
-    private String yamcsInstance;
+    private final String yamcsInstance;
     private Log log;
+    private YConfiguration config;
 
     private Map<String, ActivityExecutor> executors = new HashMap<>();
     private ConcurrentMap<UUID, OngoingActivity> ongoingActivities = new ConcurrentHashMap<>();
@@ -59,23 +61,11 @@ public class ActivityService extends AbstractService {
     private ListeningExecutorService exec = listeningDecorator(Executors.newCachedThreadPool(
             new ThreadFactoryBuilder().setNameFormat("YamcsActivityService-worker").build()));
 
-    public Spec getSpec() {
-        var spec = new Spec();
-        for (var executor : ServiceLoader.load(ActivityExecutor.class)) {
-            var executorSpec = executor.getSpec();
-            if (executorSpec != null) {
-                spec.addOption(executorSpec.getName(), OptionType.MAP)
-                        .withSpec(executorSpec)
-                        .withApplySpecDefaults(true);
-            }
-        }
+    public ActivityService(String instanceName) throws ValidationException, InitException {
+        this.yamcsInstance = instanceName;
+        log = new Log(getClass(), instanceName);
+        config = readConfiguration(instanceName);
 
-        return spec;
-    }
-
-    public void init(String yamcsInstance, YConfiguration config) throws InitException {
-        this.yamcsInstance = yamcsInstance;
-        log = new Log(getClass(), yamcsInstance);
         activityDb = new ActivityDb(yamcsInstance);
         activityLogDb = new ActivityLogDb(yamcsInstance);
         for (var executor : ServiceLoader.load(ActivityExecutor.class)) {
@@ -89,8 +79,51 @@ public class ActivityService extends AbstractService {
         }
     }
 
-    @Override
-    protected void doStart() {
+    public static /* temporary, used by TimelineService */ Spec getSpec() {
+        var spec = new Spec();
+        for (var executor : ServiceLoader.load(ActivityExecutor.class)) {
+            var executorSpec = executor.getSpec();
+            if (executorSpec != null) {
+                spec.addOption(executorSpec.getName(), OptionType.MAP)
+                        .withSpec(executorSpec)
+                        .withApplySpecDefaults(true);
+            }
+        }
+
+        return spec;
+    }
+
+    private YConfiguration readConfiguration(String instanceName) throws ValidationException {
+        var instance = YamcsServer.getServer().getInstance(instanceName);
+        var instanceConfig = instance.getConfig();
+        YConfiguration activityConfig = YConfiguration.emptyConfig();
+        if (instanceConfig.containsKey("activities")) {
+            activityConfig = instanceConfig.getConfig("activities");
+        } else {
+            var rawInstanceConfig = instance.getRawConfig();
+            if (rawInstanceConfig.containsKey("services")) {
+                for (var serviceConfig : rawInstanceConfig.getConfigList("services")) {
+                    if (serviceConfig.containsKey("class")
+                            && serviceConfig.containsKey("args")
+                            && serviceConfig.getString("class").equals(TimelineService.class.getName())) {
+                        var timelineConfig = serviceConfig.getConfig("args");
+                        if (timelineConfig.containsKey("activities")) {
+                            log.warn("DEPRECATED CONFIGURATION: You are currently specifying 'activities' "
+                                    + "as part of the {} service args. Move this configuration section to "
+                                    + "the top-level of your yamcs.{}.yaml file instead (activities have "
+                                    + "been upgraded to become a core Yamcs functionality).",
+                                    TimelineService.class.getName(), instanceName);
+                            activityConfig = timelineConfig.getConfig("activities");
+                        }
+                    }
+                }
+            }
+        }
+
+        return getSpec().validate(activityConfig);
+    }
+
+    public void start() {
         // In case of an unclean shutdown, clean-up old activities without stop
         var unfinishedActivities = activityDb.getUnfinishedActivities();
         if (!unfinishedActivities.isEmpty()) {
@@ -101,8 +134,6 @@ public class ActivityService extends AbstractService {
             }
             activityDb.updateAll(unfinishedActivities);
         }
-
-        notifyStarted();
     }
 
     public String getYamcsInstance() {
@@ -350,15 +381,12 @@ public class ActivityService extends AbstractService {
         return activityLogDb;
     }
 
-    @Override
-    protected void doStop() {
+    public void stop() {
         try {
             exec.shutdownNow();
             exec.awaitTermination(10, TimeUnit.SECONDS);
-            notifyStopped();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            notifyFailed(e);
         }
     }
 }
