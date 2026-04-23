@@ -61,6 +61,8 @@ public class ScriptExecutor implements ActivityExecutor {
         spec.addOption("fileAssociations", OptionType.MAP)
                 .withSpec(Spec.ANY)
                 .withApplySpecDefaults(true);
+
+        spec.addOption("runners", OptionType.ANY);
         return spec;
     }
 
